@@ -1,0 +1,75 @@
+<xml>
+    <extension name="xmld" title="Xmld" version="1.0">
+
+        <lib name="a" type="native" src="xml"/>
+        <lib name="p" type="rio" src="parser.rio"/>
+
+        <nob name="xml" consumer="true">
+
+            <produce lib="a" method="xml" default-value=""/>
+
+            <term name="elem">
+                <match>
+                    <allow>
+                        <parent nob="xmld:xml"/>
+                        <parent term="tag"/>
+                    </allow>
+                    <parse method="xmld" lib="p"/>
+                </match>
+
+                <produce method="elem" lib="a"/>
+                
+            </term>
+
+            <term name="tag">
+                <match>
+                    <allow>
+                        <parent nob="xmld:xml"/>
+                        <parent term="tag"/>
+                    </allow>
+
+                    <head string="." highlight-head="punctuation" highlight-body="tag"/>
+                </match>
+
+                <produce method="tag" lib="a"/>
+
+            </term>
+
+            <term name="attrs">
+                <match>
+                    <allow>
+                        <parent term="tag"/>
+                    </allow>
+                    <body string="@" highlight="attr-name"/>
+                </match>
+
+                <produce method="attributes" lib="a"/>
+                
+            </term>
+
+            <term name="key">
+                <match>
+                    <allow>
+                        <parent term="attrs"/>
+                    </allow>
+
+                    <body highlight="attr-name"/>
+                </match>
+
+                <produce method="attrKey" lib="a"/>
+            </term>
+
+            <term name="textnode" >
+                <match>
+                    <allow>
+                        <parent term="tag"/>
+                    </allow>
+                    <head string="'" highlight-head="punctuation" highlight-body="string"/>
+                </match>
+
+                <produce method="textNode" lib="a"/>
+            </term>
+
+        </nob>
+    </extension>
+</xml>

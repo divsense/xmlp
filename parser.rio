@@ -1,0 +1,52 @@
+export xmld
+
+import 'io'
+import 'http://localhost:8080/mart/divsense/rio/parser.rio'
+
+tagStart = '.'
+attrStart = '@'
+passStart = '~'
+blockStart = '!'
+
+ident = some(re(/[a-zA-Z0-9:-]/)) >>= pure . join('')
+
+quotStr = c -> char(c) >>= a -> some(noneof(c)) >>= x -> char(c) >>= b -> pure([a] ++ x ++ [b])
+
+singleQuotStr = quotStr("'")
+doubleQuotStr = quotStr('"')
+
+attrValue = (singleQuotStr <|> doubleQuotStr) >>= pure . join('')
+
+keyOnly = ident >>= x -> pure([{token: 'attr-name', value: x}])
+keyValue = ident >>= x -> char("=") >> attrValue >>= v -> pure([
+            {token: 'attr-name', value: x},
+            {token: 'punctuation', value: '='},
+            {token: 'attr-value', value: v}])
+
+attr = space >>= xs -> (keyValue <|> keyOnly) >>= ys -> pure([{token: 'punctuation', value: join('',xs)}] ++ ys)
+
+attribute = char(attrStart) >> ident >>= id -> pure([
+        {token: 'punctuation', value: attrStart},
+        {token:'attr-name', value: id}
+        ])
+
+elem = char(tagStart) >> ident >>= id -> pure([
+        {token: 'punctuation', value: tagStart},
+        {token:'tag', value: id}
+        ])
+
+elemWithAttrs = elem >>= t -> some(attr) >>= xs -> pure(t ++ flatten(xs))
+
+special = s -> char(s) >> rest >>= x -> pure([
+                        {token:'selector', value: s},
+                        {token:'italic token-comment', value: x}
+                        ])
+
+pass = special(passStart)
+block = special(blockStart)
+
+/*xml = elemWithAttrs <|> elem <|> attribute <|> pass <|> block*/
+xml = elemWithAttrs <|> attribute <|> pass <|> block
+
+xmld = unless(isNil, head) . prop('parse', xml)
+
