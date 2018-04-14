@@ -1,7 +1,7 @@
 export xmld
 
 import 'io'
-import 'http://localhost:8080/mart/divsense/rio/parser.rio'
+import 'mart::divsense/rio/src/parser'
 
 tagStart = '.'
 attrStart = '@'
