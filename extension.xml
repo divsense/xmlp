@@ -1,8 +1,8 @@
 <xml>
-    <extension name="xmld" title="Xmld" version="1.0">
+    <extension name="xmlp" title="Xmld" version="1.0">
 
         <lib name="a" type="native" src="xml"/>
-        <lib name="p" type="rio" src="parser.rio"/>
+        <lib name="p" type="rio" src="mart::divsense/xmlp/parser.rio"/>
 
         <nob name="xml" consumer="true">
 
@@ -11,10 +11,10 @@
             <term name="elem">
                 <match>
                     <allow>
-                        <parent nob="xmld:xml"/>
+                        <parent nob="xmlp:xml"/>
                         <parent term="tag"/>
                     </allow>
-                    <parse method="xmld" lib="p"/>
+                    <parse method="xmlp" lib="p"/>
                 </match>
 
                 <produce method="elem" lib="a"/>
@@ -24,7 +24,7 @@
             <term name="tag">
                 <match>
                     <allow>
-                        <parent nob="xmld:xml"/>
+                        <parent nob="xmlp:xml"/>
                         <parent term="tag"/>
                     </allow>
 

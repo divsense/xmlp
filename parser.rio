@@ -1,7 +1,7 @@
-export xmld
+export xmlp
 
 import 'io'
-import 'mart::divsense/rio/src/parser'
+import 'mart::divsense/rio/parser'
 
 tagStart = '.'
 attrStart = '@'
@@ -48,5 +48,5 @@ block = special(blockStart)
 /*xml = elemWithAttrs <|> elem <|> attribute <|> pass <|> block*/
 xml = elemWithAttrs <|> attribute <|> pass <|> block
 
-xmld = unless(isNil, head) . prop('parse', xml)
+xmlp = unless(isNil, head) . prop('parse', xml)
 
