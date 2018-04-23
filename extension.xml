@@ -1,73 +1,136 @@
 <xml>
     <extension name="xmlp" title="Xmld" version="1.0">
 
-        <lib name="a" type="native" src="xml"/>
+        <!--<lib name="a" type="native" src="xml"/>-->
+        <lib name="a" type="rio" src="mart::divsense/xmlp/producer.rio"/>
         <lib name="p" type="rio" src="mart::divsense/xmlp/parser.rio"/>
 
         <nob name="xml" consumer="true">
 
             <produce lib="a" method="xml" default-value=""/>
 
-            <term name="elem">
+            <term name="label" >
+                <match>
+                    <head string="~" highlight-head="punctuation" highlight-body="important"/>
+                </match>
+                <produce method="glue" lib="a"/>
+            </term>
+
+            <term name="block" >
+                <match>
+                    <head string="!" highlight-head="punctuation" highlight-body="block"/>
+                </match>
+                <produce method="block" lib="a"/>
+            </term>
+
+            <term name="tagLine">
                 <match>
                     <allow>
                         <parent nob="xmlp:xml"/>
-                        <parent term="tag"/>
+                        <parent term="tagLine"/>
+                        <parent term="label"/>
+                        <parent term="block"/>
                     </allow>
-                    <parse method="xmlp" lib="p"/>
+                    <parse method="tagLine" lib="p"/>
                 </match>
 
-                <produce method="elem" lib="a"/>
+                <produce method="tagLine" lib="a"/>
                 
             </term>
 
-            <term name="tag">
+            <term name="attrContainer">
                 <match>
                     <allow>
                         <parent nob="xmlp:xml"/>
-                        <parent term="tag"/>
-                    </allow>
-
-                    <head string="." highlight-head="punctuation" highlight-body="tag"/>
-                </match>
-
-                <produce method="tag" lib="a"/>
-
-            </term>
-
-            <term name="attrs">
-                <match>
-                    <allow>
-                        <parent term="tag"/>
+                        <parent term="tagLine"/>
+                        <parent term="label"/>
+                        <parent term="block"/>
                     </allow>
                     <body string="@" highlight="attr-name"/>
                 </match>
 
-                <produce method="attributes" lib="a"/>
+                <produce method="attrContainer" lib="a"/>
+            </term>
+
+            <term name="attrKeyContainer">
+                <match>
+                    <allow>
+                        <parent nob="xmlp:xml"/>
+                        <parent term="tagLine"/>
+                        <parent term="label"/>
+                        <parent term="block"/>
+                    </allow>
+                    <parse method="attrKeyContainer" lib="p"/>
+                </match>
+
+                <produce method="attrKeyContainer" lib="a"/>
                 
             </term>
 
-            <term name="key">
+            <term name="attrLine">
                 <match>
                     <allow>
-                        <parent term="attrs"/>
+                        <parent nob="xmlp:xml"/>
+                        <parent term="tagLine"/>
+                        <parent term="label"/>
+                        <parent term="block"/>
                     </allow>
+                    <parse method="attrLine" lib="p"/>
+                </match>
+                <produce method="attrLine" lib="a"/>
+            </term>
 
-                    <body highlight="attr-name"/>
+            <term name="attrKeyValue">
+                <match>
+                    <allow>
+                        <parent term="attrContainer"/>
+                        <parent term="label"/>
+                        <parent term="block"/>
+                    </allow>
+                    <parse method="attrKeyValue" lib="p"/>
+                </match>
+
+                <produce method="attrValue" lib="a"/>
+            </term>
+
+            <term name="attrKey">
+                <match>
+                    <allow>
+                        <parent term="attrContainer"/>
+                        <parent term="label"/>
+                        <parent term="block"/>
+                    </allow>
+                    <parse method="attrKey" lib="p"/>
                 </match>
 
                 <produce method="attrKey" lib="a"/>
             </term>
 
+            <term name="attrValue">
+                <match>
+                    <allow>
+                        <parent term="attrKey"/>
+                        <parent term="attrKeyContainer"/>
+                        <parent term="label"/>
+                        <parent term="block"/>
+                    </allow>
+                    <body highlight="attr-value"/>
+                </match>
+
+                <produce method="attrValue" lib="a"/>
+            </term>
+
             <term name="textnode" >
                 <match>
                     <allow>
-                        <parent term="tag"/>
+                        <parent term="tagLine"/>
+                        <parent term="label"/>
+                        <parent term="block"/>
                     </allow>
-                    <head string="'" highlight-head="punctuation" highlight-body="string"/>
+                    <head string="'" highlight-head="punctuation" highlight-body="text"/>
                 </match>
 
-                <produce method="textNode" lib="a"/>
+                <produce method="textTail" lib="a"/>
             </term>
 
         </nob>

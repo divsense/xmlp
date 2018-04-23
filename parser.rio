@@ -1,12 +1,9 @@
-export xmlp
+export tagLine, attrLine, attrKey, attrKeyContainer, attrKeyValue
 
-import 'io'
 import 'mart::divsense/rio/parser'
 
 tagStart = '.'
 attrStart = '@'
-passStart = '~'
-blockStart = '!'
 
 ident = some(re(/[a-zA-Z0-9:-]/)) >>= pure . join('')
 
@@ -23,12 +20,9 @@ keyValue = ident >>= x -> char("=") >> attrValue >>= v -> pure([
             {token: 'punctuation', value: '='},
             {token: 'attr-value', value: v}])
 
-attr = space >>= xs -> (keyValue <|> keyOnly) >>= ys -> pure([{token: 'punctuation', value: join('',xs)}] ++ ys)
+kvo = keyValue <|> keyOnly
 
-attribute = char(attrStart) >> ident >>= id -> pure([
-        {token: 'punctuation', value: attrStart},
-        {token:'attr-name', value: id}
-        ])
+attr = space >>= xs -> kvo >>= ys -> pure([{token: 'punctuation', value: join('',xs)}] ++ ys)
 
 elem = char(tagStart) >> ident >>= id -> pure([
         {token: 'punctuation', value: tagStart},
@@ -37,16 +31,21 @@ elem = char(tagStart) >> ident >>= id -> pure([
 
 elemWithAttrs = elem >>= t -> some(attr) >>= xs -> pure(t ++ flatten(xs))
 
-special = s -> char(s) >> rest >>= x -> pure([
-                        {token:'selector', value: s},
-                        {token:'italic token-comment', value: x}
-                        ])
+kcont = char(attrStart) >> ident >>= x -> eof() >> pure([{token: 'punctuation', value: attrStart}, {token: 'attr-name', value: x}])
 
-pass = special(passStart)
-block = special(blockStart)
+kv = some(attr) >>= xs -> pure(flatten(xs))
 
-/*xml = elemWithAttrs <|> elem <|> attribute <|> pass <|> block*/
-xml = elemWithAttrs <|> attribute <|> pass <|> block
+akv = keyValue >>= xs -> many(attr) >>= ys -> pure(xs ++ ys)
 
-xmlp = unless(isNil, head) . prop('parse', xml)
+atl = char(attrStart) >> kv >>= xs -> pure([{token: 'punctuation', value: attrStart}] ++ xs)
+
+tgl = elemWithAttrs <|> elem
+
+parse = p -> unless(isNil, head) . prop('parse', p)
+
+tagLine = parse(tgl)
+attrLine = parse(atl)
+attrKey = parse(keyOnly)
+attrKeyContainer = parse(kcont)
+attrKeyValue = parse(akv)
 
