@@ -1,11 +1,18 @@
 <xml>
     <extension name="xmlp" title="Xmld" version="1.0">
 
-        <!--<lib name="a" type="native" src="xml"/>-->
         <lib name="a" type="rio" src="mart::divsense/xmlp/producer.rio"/>
         <lib name="p" type="rio" src="mart::divsense/xmlp/parser.rio"/>
 
         <nob name="xml" consumer="true">
+
+            <settings lib="s">
+                <item name="complete" value="true" type="boolean" title="Complete XML"></item>
+                <category name="format" title="Format">
+                    <item name="minimize" value="true" type="string" title="Minimize"></item>
+                    <item name="indent" value="2" type="number" title="Indent/space"></item>
+                </category>
+            </settings>
 
             <produce lib="a" method="xml" default-value=""/>
 
