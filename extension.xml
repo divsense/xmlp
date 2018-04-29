@@ -14,20 +14,20 @@
                 </category>
             </settings>
 
-            <produce lib="a" method="xml" default-value=""/>
+            <handle case="product" lib="a" method="xml"/>
 
             <term name="label" >
                 <match>
                     <head string="~" highlight-head="punctuation" highlight-body="important"/>
                 </match>
-                <produce method="glue" lib="a"/>
+                <handle case="product" method="glue" lib="a"/>
             </term>
 
             <term name="block" >
                 <match>
                     <head string="!" highlight-head="punctuation" highlight-body="block"/>
                 </match>
-                <produce method="block" lib="a"/>
+                <handle case="product" method="block" lib="a"/>
             </term>
 
             <term name="tagLine">
@@ -41,7 +41,7 @@
                     <parse method="tagLine" lib="p"/>
                 </match>
 
-                <produce method="tagLine" lib="a"/>
+                <handle case="product" method="tagLine" lib="a"/>
                 
             </term>
 
@@ -56,7 +56,7 @@
                     <body string="@" highlight="attr-name"/>
                 </match>
 
-                <produce method="attrContainer" lib="a"/>
+                <handle case="product" method="attrContainer" lib="a"/>
             </term>
 
             <term name="attrKeyContainer">
@@ -70,7 +70,7 @@
                     <parse method="attrKeyContainer" lib="p"/>
                 </match>
 
-                <produce method="attrKeyContainer" lib="a"/>
+                <handle case="product" method="attrKeyContainer" lib="a"/>
                 
             </term>
 
@@ -84,7 +84,7 @@
                     </allow>
                     <parse method="attrLine" lib="p"/>
                 </match>
-                <produce method="attrLine" lib="a"/>
+                <handle case="product" method="attrLine" lib="a"/>
             </term>
 
             <term name="attrKeyValue">
@@ -97,7 +97,7 @@
                     <parse method="attrKeyValue" lib="p"/>
                 </match>
 
-                <produce method="attrValue" lib="a"/>
+                <handle case="product" method="attrValue" lib="a"/>
             </term>
 
             <term name="attrKey">
@@ -110,7 +110,7 @@
                     <parse method="attrKey" lib="p"/>
                 </match>
 
-                <produce method="attrKey" lib="a"/>
+                <handle case="product" method="attrKey" lib="a"/>
             </term>
 
             <term name="attrValue">
@@ -124,7 +124,7 @@
                     <body highlight="attr-value"/>
                 </match>
 
-                <produce method="attrValue" lib="a"/>
+                <handle case="product" method="attrValue" lib="a"/>
             </term>
 
             <term name="textnode" >
@@ -137,7 +137,7 @@
                     <head string="'" highlight-head="punctuation" highlight-body="text"/>
                 </match>
 
-                <produce method="textTail" lib="a"/>
+                <handle case="product" method="textTail" lib="a"/>
             </term>
 
         </nob>
